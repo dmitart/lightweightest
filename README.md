@@ -41,3 +41,15 @@ It is also possible to update handlers dynamically, like
     }
     server.stop()
 
+Complete example with of running server from random Groovy script:
+
+    @GrabResolver(name="lightweightest", m2Compatible='true', root='https://raw.github.com/dmitart/lightweightest/master/repository')
+    @Grab("org.lightweightest:lightweightest:0.1" )
+    import org.lightweightest.Lightweightest
+
+    Lightweightest.start(port:9999, stopAfter:1) {
+      get("/card/list") {
+        "qwerty"
+      }
+    }
+    println "http://localhost:9999/card/list".toURL().text
