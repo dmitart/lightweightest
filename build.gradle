@@ -1,0 +1,23 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+project.group = "org.lightweightest"
+archivesBaseName = "lightweightest"
+project.version = "0.1"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  groovy 'org.codehaus.groovy:groovy-all:2.0.5'
+  testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      repository(url: "repository/")
+    }
+  }
+}
