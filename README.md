@@ -41,7 +41,7 @@ It is also possible to update handlers dynamically, like
     }
     server.stop()
 
-Complete example with of running server from random Groovy script:
+Complete example of running server from Groovy script:
 
     @GrabResolver(name="lightweightest", m2Compatible='true', root='https://raw.github.com/dmitart/lightweightest/master/repository')
     @Grab("org.lightweightest:lightweightest:0.1" )
