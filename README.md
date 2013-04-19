@@ -10,6 +10,7 @@ To start server on port 9999 that returns "qwerty" on GET requests to "/test", j
 This is it.
 
 For testing, you usually know exact execution scenario, so, for example, to serve just one request and destroy server automatically, run
+
     Lightweightest.start(port:9999, stopAfter:1) {
       get("/test") {
         "qwerty"
@@ -17,6 +18,7 @@ For testing, you usually know exact execution scenario, so, for example, to serv
     }
 
 To stop server explicitly, run
+
     def server = Lightweightest.start(port:9999) {
       get("/test") {
         "qwerty"
@@ -25,6 +27,7 @@ To stop server explicitly, run
     server.stop()
 
 It is also possible to update handlers dynamically, like
+
     def server = Lightweightest.start(port:9999) {
       get("/test") {
         "qwerty"
