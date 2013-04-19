@@ -17,7 +17,7 @@ dependencies {
 uploadArchives {
   repositories {
     mavenDeployer {
-      repository(url: "repository/")
+      repository(url: "http://raw.github.com/dmitart/lightweightest/master/repository/")
     }
   }
 }

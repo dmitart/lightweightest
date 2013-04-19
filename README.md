@@ -35,6 +35,7 @@ It is also possible to update handlers dynamically, like
         "qwerty"
       }
     }
+    ...
     server.get("/test") {
       "asdfg"
     }
