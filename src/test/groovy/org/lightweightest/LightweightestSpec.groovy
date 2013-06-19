@@ -46,4 +46,69 @@ class LightweightestSpec extends Specification {
     then:
     thrown(ConnectException)
   }
+
+  def "checking request"() {
+    when:
+    def server = Lightweightest.start(port:9999, stopAfter:1) {
+      post("/test") {
+        "qwerty"
+      }
+    }
+    def conn = "http://localhost:9999/test".toURL().openConnection()
+    conn.setDoOutput(true)
+    conn.getOutputStream() << "test".bytes
+
+    then:
+    conn.getContent().text == 'qwerty'
+    server.requests.size() == 1
+    server.requests[0].text == 'test'
+  }
+
+  def "checking request as xml"() {
+    when:
+    def server = Lightweightest.start(port:9999, stopAfter:1) {
+      post("/test") {
+        "qwerty"
+      }
+    }
+    def conn = "http://localhost:9999/test".toURL().openConnection()
+    conn.setDoOutput(true)
+    conn.getOutputStream() << "<root><elem>test</elem></root>".bytes
+
+    then:
+    conn.getContent().text == 'qwerty'
+    server.requests.size() == 1
+    server.requests[0].xml.elem[0].text() == 'test'
+  }
+
+  def "checking request as json"() {
+    when:
+    def server = Lightweightest.start(port:9999, stopAfter:1) {
+      post("/test") {
+        "qwerty"
+      }
+    }
+    def conn = "http://localhost:9999/test".toURL().openConnection()
+    conn.setDoOutput(true)
+    conn.getOutputStream() << '{"root":{"elem":"test"}}'.bytes
+
+    then:
+    conn.getContent().text == 'qwerty'
+    server.requests.size() == 1
+    server.requests[0].json.root.elem == 'test'
+  }
+
+  def "checking request params"() {
+    when:
+    def server = Lightweightest.start(port:9999, stopAfter:1) {
+      get("/test") {
+        "qwerty"
+      }
+    }
+
+    then:
+    "http://localhost:9999/test?id=1&value=aa".toURL().text == "qwerty"
+    server.requests[0].params.id == '1'
+    server.requests[0].params.value == 'aa'
+  }
 }

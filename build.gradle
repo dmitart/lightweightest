@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 project.group = "org.lightweightest"
 archivesBaseName = "lightweightest"
-project.version = "0.1"
+project.version = "0.2"
 
 repositories {
   mavenCentral()
