@@ -101,13 +101,13 @@ class LightweightestSpec extends Specification {
   def "checking request params"() {
     when:
     def server = Lightweightest.start(port:9999, stopAfter:1) {
-      get("/test") {
-        "qwerty"
+      get("/test") { request ->
+        "qwerty ${request.params.id}"
       }
     }
 
     then:
-    "http://localhost:9999/test?id=1&value=aa".toURL().text == "qwerty"
+    "http://localhost:9999/test?id=1&value=aa".toURL().text == "qwerty 1"
     server.requests[0].params.id == '1'
     server.requests[0].params.value == 'aa'
   }

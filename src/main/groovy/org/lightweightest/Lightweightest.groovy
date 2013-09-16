@@ -25,11 +25,12 @@ class Lightweightest {
       @Override
       void handle(HttpExchange exchange) throws IOException {
         def func = methods[exchange.requestMethod][exchange.requestURI.path.toString()]
-        requests << new LwtRequest(exchange.requestURI, exchange.requestBody.bytes, exchange.requestHeaders)
+        def request = new LwtRequest(exchange.requestURI, exchange.requestBody.bytes, exchange.requestHeaders)
+        requests << request
         def headers = exchange.getResponseHeaders()
         headers.set("Content-Type", "text/plain")
         exchange.sendResponseHeaders(200, 0)
-        def res = func()
+        def res = func(request)
         exchange.responseBody << res
         exchange.responseBody.close()
         if (latch) {
