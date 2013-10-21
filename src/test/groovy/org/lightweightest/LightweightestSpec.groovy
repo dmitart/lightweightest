@@ -111,4 +111,18 @@ class LightweightestSpec extends Specification {
     server.requests[0].params.id == '1'
     server.requests[0].params.value == 'aa'
   }
+
+  def "check exception"() {
+    when:
+    Lightweightest.start(port:9999, stopAfter:1) {
+      get("/test") { request ->
+        def object = null
+        "qwerty ${object.id}"
+      }
+    }
+    "http://localhost:9999/test".toURL().text
+
+    then:
+    thrown(IOException)
+  }
 }

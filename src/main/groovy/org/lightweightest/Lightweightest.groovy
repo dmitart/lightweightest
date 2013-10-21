@@ -23,15 +23,21 @@ class Lightweightest {
     server = HttpServer.create(addr, 0)
     server.createContext("/", new HttpHandler() {
       @Override
-      void handle(HttpExchange exchange) throws IOException {
+      void handle(HttpExchange exchange) throws Exception {
         def func = methods[exchange.requestMethod][exchange.requestURI.path.toString()]
         def request = new LwtRequest(exchange.requestURI, exchange.requestBody.bytes, exchange.requestHeaders)
         requests << request
         def headers = exchange.getResponseHeaders()
         headers.set("Content-Type", "text/plain")
-        exchange.sendResponseHeaders(200, 0)
-        def res = func(request)
-        exchange.responseBody << res
+        def result
+        try {
+          result = func(request)
+          exchange.sendResponseHeaders(200, 0)
+        } catch (e) {
+          result = e.message
+          exchange.sendResponseHeaders(500, 0)
+        }
+        exchange.responseBody << result
         exchange.responseBody.close()
         if (latch) {
           latch.countDown()
