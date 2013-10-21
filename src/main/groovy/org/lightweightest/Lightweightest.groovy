@@ -29,15 +29,17 @@ class Lightweightest {
         requests << request
         def headers = exchange.getResponseHeaders()
         headers.set("Content-Type", "text/plain")
-        def result
         try {
-          result = func(request)
+          def result = func(request)
           exchange.sendResponseHeaders(200, 0)
+          exchange.responseBody << result
         } catch (e) {
-          result = e.message
+          e.printStackTrace()
+          StringWriter writer = new StringWriter()
           exchange.sendResponseHeaders(500, 0)
+          e.printStackTrace(new PrintWriter(writer))
+          exchange.responseBody << writer.toString()
         }
-        exchange.responseBody << result
         exchange.responseBody.close()
         if (latch) {
           latch.countDown()
