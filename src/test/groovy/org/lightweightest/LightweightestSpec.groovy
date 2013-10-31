@@ -12,7 +12,7 @@ class LightweightestSpec extends Specification {
   def "running server"() {
     when:
     server = Lightweightest.start(port:9999) {
-      get("/test") {
+      get("/test") {request, response ->
         "qwerty"
       }
     }
@@ -22,7 +22,7 @@ class LightweightestSpec extends Specification {
 
   def "updating configuration"() {
     when:
-    server.get("/test") {
+    server.get("/test") {request, response ->
       "asdfgh"
     }
 
@@ -36,7 +36,7 @@ class LightweightestSpec extends Specification {
   def "auto shutdown"() {
     when:
     Lightweightest.start(port:9999, stopAfter:1) {
-      get("/test") {
+      get("/test") {request, response ->
         "qwerty"
       }
     }
@@ -50,7 +50,7 @@ class LightweightestSpec extends Specification {
   def "checking request"() {
     when:
     def server = Lightweightest.start(port:9999, stopAfter:1) {
-      post("/test") {
+      post("/test") {request, response ->
         "qwerty"
       }
     }
@@ -67,7 +67,7 @@ class LightweightestSpec extends Specification {
   def "checking request as xml"() {
     when:
     def server = Lightweightest.start(port:9999, stopAfter:1) {
-      post("/test") {
+      post("/test") {request, response ->
         "qwerty"
       }
     }
@@ -84,7 +84,7 @@ class LightweightestSpec extends Specification {
   def "checking request as json"() {
     when:
     def server = Lightweightest.start(port:9999, stopAfter:1) {
-      post("/test") {
+      post("/test") {request, response ->
         "qwerty"
       }
     }
@@ -101,7 +101,7 @@ class LightweightestSpec extends Specification {
   def "checking request params"() {
     when:
     def server = Lightweightest.start(port:9999, stopAfter:1) {
-      get("/test") { request ->
+      get("/test") {request, response ->
         "qwerty ${request.params.id}"
       }
     }
@@ -115,7 +115,7 @@ class LightweightestSpec extends Specification {
   def "check exception"() {
     when:
     Lightweightest.start(port:9999, stopAfter:1) {
-      get("/test") { request ->
+      get("/test") {request, response ->
         def object = null
         "qwerty ${object.id}"
       }
@@ -125,4 +125,23 @@ class LightweightestSpec extends Specification {
     then:
     thrown(IOException)
   }
+
+  def "setting headers and status"() {
+    when:
+    Lightweightest.start(port:9999, stopAfter:1) {
+      get("/test") {request, response ->
+        response.status = 302
+        response.headers.set("Location", "newlocation")
+        "asdfgh"
+      }
+    }
+    HttpURLConnection conn = "http://localhost:9999/test".toURL().openConnection()
+    conn.setInstanceFollowRedirects(false)
+    conn.connect()
+
+    then:
+    conn.getHeaderField("Location") == "newlocation"
+    conn.getResponseCode() == 302
+  }
+
 }

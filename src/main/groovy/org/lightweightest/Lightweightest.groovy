@@ -27,11 +27,11 @@ class Lightweightest {
         def func = methods[exchange.requestMethod][exchange.requestURI.path.toString()]
         def request = new LwtRequest(exchange.requestURI, exchange.requestBody.bytes, exchange.requestHeaders)
         requests << request
-        def headers = exchange.getResponseHeaders()
-        headers.set("Content-Type", "text/plain")
+        def response = new LwtResponse(200, exchange.getResponseHeaders())
+        response.headers.set("Content-Type", "text/plain")
         try {
-          def result = func(request)
-          exchange.sendResponseHeaders(200, 0)
+          def result = func(request, response)
+          exchange.sendResponseHeaders(response.status, 0)
           exchange.responseBody << result
         } catch (e) {
           e.printStackTrace()
